@@ -70,3 +70,9 @@ Uploads go to the application server for extraction and are not saved as files. 
 - https://vercel.com/docs/plans/hobby
 
 No emails, reminders or applications are sent automatically.
+
+## Technical documentation and attribution
+
+See the [technical report](docs/TECHNICAL_REPORT.md) for architecture, evaluation scope, and current verification. Maintained in Aditya Hambire's repository; preserve existing Git history and third-party attribution. Repository ownership does not establish sole authorship.
+
+Current checks and unresolved prerequisites: [verification record](docs/VERIFICATION.md).
