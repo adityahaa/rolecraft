@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {PDFDocument} from 'pdf-lib';
+import {exportDocx,exportPdf,extractFile} from '../lib/documents';
+import {exampleProfile,exampleJob,compose} from '../lib/domain';
+import JSZip from 'jszip';
+const draft=compose(exampleProfile,exampleJob,[1,0,2]);
+test('edited DOCX export round-trips actual content, no fabricated achievements',async()=>{const text=draft.resume+'\n\nEDITED-CONTENT-TEST';const bytes=await exportDocx(text);const extracted=await extractFile('test.docx',bytes);assert.ok(extracted.includes('EDITED-CONTENT-TEST'));for(const f of exampleProfile.facts)assert.ok(extracted.includes(f.text.split('\n')[0]));await mkdir('test-results',{recursive:true});await writeFile('test-results/example-resume.docx',bytes);});
+test('PDF exports preserve resume and letter text and paginate long documents',async()=>{await mkdir('test-results',{recursive:true});for(const [kind,text] of Object.entries({resume:draft.resume,letter:draft.letter})){const bytes=await exportPdf(text+'\n\nEDITED-CONTENT-TEST');assert.ok(bytes.subarray(0,5).toString()==='%PDF-');const extracted=await extractFile('test.pdf',bytes);assert.ok(extracted.includes('EDITED-CONTENT-TEST'));assert.ok(extracted.includes('Alex Morgan'));await writeFile(`test-results/example-${kind}.pdf`,bytes);}const long=await exportPdf(('A long factual sentence with no invented metrics.\n').repeat(180));assert.ok((await PDFDocument.load(long)).getPageCount()>2);});
+test('reject unsupported, fake, too-large and textless uploads',async()=>{await assert.rejects(()=>extractFile('test.exe',Buffer.from('unsupported file')),/Only/);await assert.rejects(()=>extractFile('fake.pdf',Buffer.from('this is fake')),/valid PDF/);await assert.rejects(()=>extractFile('fake.docx',Buffer.from('this is fake')),/valid DOCX/);await assert.rejects(()=>extractFile('big.pdf',Buffer.alloc(3*1024*1024+1)),/3 MB/);const pdf=await PDFDocument.create();pdf.addPage();const blank=Buffer.from(await pdf.save());await assert.rejects(()=>extractFile('scan.pdf',blank),/No usable text/);});
+test('reject DOCX expansion bomb before parser',async()=>{const zip=new JSZip();zip.file('word/document.xml','x'.repeat(11*1024*1024));const bytes=await zip.generateAsync({type:'nodebuffer',compression:'DEFLATE'});await assert.rejects(()=>extractFile('bomb.docx',bytes),/10 MB/);});
+test('PDF unsupported glyphs fail explicitly, DOCX keeps them',async()=>{await assert.rejects(()=>exportPdf('Test 🦄'),/does not support/);assert.ok((await extractFile('text.docx',await exportDocx('A document with enough text to parse. 🦄'))).includes('🦄'));});
