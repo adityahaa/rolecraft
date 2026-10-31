@@ -56,7 +56,7 @@ Uploads go to the application server for extraction and are not saved as files. 
 
 ## Verification
 
-14 automated tests pass: payload privacy, exact evidence preservation, matching, safe links, source normalization/deduplication, location filtering, DOCX roundtrip, PDF text/pagination, invalid/scanned/oversized upload handling and archive-expansion rejection. TypeScript passes. Earlier production build passed; the latest changes need a fresh build. PDF samples were visually inspected. Live AI, public deployed navigation, two-browser sync, cross-user isolation and deployed deletion remain unverified.
+14 automated tests pass: payload privacy, exact evidence preservation, matching, safe links, source normalization/deduplication, location filtering, DOCX roundtrip, PDF text/pagination, invalid/scanned/oversized upload handling and archive-expansion rejection. TypeScript passes. The latest production build passes. PDF samples were visually inspected. Live AI, public deployed navigation, two-browser sync, cross-user isolation and deployed deletion remain unverified.
 
 ## Official references
 
