@@ -42,7 +42,7 @@ GitHub sign-in uses Supabase PKCE and short-lived HttpOnly proof cookies. Config
 
 Use only a Gemini project with no billing and free quota for gemini-2.5-flash-lite. Set GEMINI_FREE_TIER_CONFIRMED=true after checking AI Studio. LOCAL_AI_COUNTRY=IN permits local India testing; production uses Vercel's country header. AI is restricted to adults in India. There is no paid fallback or automatic retry.
 
-## Honest coverage and privacy
+## coverage and privacy
 
 Remotive is the only connected job source. Its public API is attributed and original source links are shown. A shared six-hour refresh claim limits upstream requests to at most four per day. Page opening and Refresh check that shared cache. Source listings are delayed by 24 hours. A sampled live feed returned 12 listings and no Mumbai Product Intern listing; this is not complete local-market coverage. Remote eligibility must be checked at the source. Manual job descriptions are always available.
 
