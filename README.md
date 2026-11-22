@@ -74,7 +74,6 @@ Uploads go to the application server for extraction and are not saved as files. 
 - https://supabase.com/docs/guides/auth/sessions/pkce-flow
 - https://vercel.com/docs/plans/hobby
 
-No emails, reminders or applications are sent automatically.
 
 ## Technical documentation and attribution
 
