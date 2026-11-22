@@ -1,13 +1,16 @@
 # Rolecraft
 
-A job search workspace with Remotive discovery, editable candidate evidence, transparent skill matching, factual resume and cover-letter drafts, PDF/DOCX exports and private application tracking.
+A job-search workspace for skill matching, evidence-based application drafts, document exports and application tracking.
 
-Status: implementation under verification. No verified public deployment yet. Live AI and private sync require server credentials and authentication-provider setup. Do not treat this as a completed production release.
+Turning a vacancy into an application involves matching requirements with actual experience, assembling relevant evidence and keeping track of the resulting documents. Rolecraft connects those steps in one workspace. Users can discover Remotive listings or enter a job description, review transparent skill matches, edit resume and cover-letter drafts, and export PDF or DOCX files.
 
+Candidate statements remain the factual basis of document composition. The credential-free example and manual workflow support local exploration, while configured Supabase authentication enables private saved applications and document versions. Optional AI orders evidence using bounded tag-and-ID inputs.
+
+[Run locally](#run-on-windows) · [Matching and composition](#from-a-vacancy-to-a-reviewable-application-document) · [Technical report](docs/TECHNICAL_REPORT.md) · [Verification](docs/VERIFICATION.md)
 
 ## Contents
 
-[Run on Windows](#run-on-windows) · [Services and configuration](#services-and-configuration) · [Honest coverage and privacy](#honest-coverage-and-privacy) · [Limits](#limits) · [Verification](#verification) · [Official references](#official-references) · [Technical documentation and attribution](#technical-documentation-and-attribution) · [From a vacancy to a reviewable application document](#from-a-vacancy-to-a-reviewable-application-document)
+[Run on Windows](#run-on-windows) · [Services and configuration](#services-and-configuration) · [Coverage and privacy](#coverage-and-privacy) · [Limits](#limits) · [Verification](#verification) · [Official references](#official-references) · [Technical documentation and attribution](#technical-documentation-and-attribution) · [From a vacancy to a reviewable application document](#from-a-vacancy-to-a-reviewable-application-document)
 
 ## Run on Windows
 
@@ -42,7 +45,7 @@ GitHub sign-in uses Supabase PKCE and short-lived HttpOnly proof cookies. Config
 
 Use only a Gemini project with no billing and free quota for gemini-2.5-flash-lite. Set GEMINI_FREE_TIER_CONFIRMED=true after checking AI Studio. LOCAL_AI_COUNTRY=IN permits local India testing; production uses Vercel's country header. AI is restricted to adults in India. There is no paid fallback or automatic retry.
 
-## coverage and privacy
+## Coverage and privacy
 
 Remotive is the only connected job source. Its public API is attributed and original source links are shown. A shared six-hour refresh claim limits upstream requests to at most four per day. Page opening and Refresh check that shared cache. Source listings are delayed by 24 hours. A sampled live feed returned 12 listings and no Mumbai Product Intern listing; this is not complete local-market coverage. Remote eligibility must be checked at the source. Manual job descriptions are always available.
 
@@ -60,6 +63,8 @@ Uploads go to the application server for extraction and are not saved as files. 
 - Supabase Free currently includes 500 MB database, 50,000 MAU and may pause after a week of inactivity. Free service availability and quotas can change.
 
 ## Verification
+
+Status: implementation under verification. No verified public deployment yet. Live AI and private sync require server credentials and authentication-provider setup. Do not treat this as a completed production release.
 
 14 automated tests pass: payload privacy, exact evidence preservation, matching, safe links, source normalization/deduplication, location filtering, DOCX roundtrip, PDF text/pagination, invalid/scanned/oversized upload handling and archive-expansion rejection. TypeScript passes. The latest production build passes. PDF samples were visually inspected. Live AI, public deployed navigation, two-browser sync, cross-user isolation and deployed deletion remain unverified.
 
