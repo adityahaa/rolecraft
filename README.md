@@ -4,6 +4,11 @@ A job search workspace with Remotive discovery, editable candidate evidence, tra
 
 Status: implementation under verification. No verified public deployment yet. Live AI and private sync require server credentials and authentication-provider setup. Do not treat this as a completed production release.
 
+
+## Contents
+
+[Run on Windows](#run-on-windows) · [Services and configuration](#services-and-configuration) · [Honest coverage and privacy](#honest-coverage-and-privacy) · [Limits](#limits) · [Verification](#verification) · [Official references](#official-references) · [Technical documentation and attribution](#technical-documentation-and-attribution) · [From a vacancy to a reviewable application document](#from-a-vacancy-to-a-reviewable-application-document)
+
 ## Run on Windows
 
 1. Install Node.js 24 LTS from https://nodejs.org (includes npm).
@@ -76,3 +81,49 @@ No emails, reminders or applications are sent automatically.
 See the [technical report](docs/TECHNICAL_REPORT.md) for architecture, evaluation scope, and current verification. Maintained in Aditya Hambire's repository; preserve existing Git history and third-party attribution. Repository ownership does not establish sole authorship.
 
 Current checks and unresolved prerequisites: [verification record](docs/VERIFICATION.md).
+
+## From a vacancy to a reviewable application document
+
+Job descriptions, candidate evidence and application status are often kept in separate places. This workspace joins them around a single task. A user discovers or enters a role, checks which recognized skills have supporting facts, edits a draft assembled from those facts, exports it, and optionally saves the application privately.
+
+```mermaid
+flowchart LR
+  A[Remotive or manual job] --> C[Fixed-vocabulary skill matching]
+  B[Candidate facts and tags] --> C
+  C --> D[Manual or optional AI evidence ordering]
+  D --> E[Template composition and editing]
+  E --> F[PDF and DOCX export]
+  E --> G[Authenticated save]
+  G --> H[(Supabase records and versions)]
+```
+
+### Matching and evidence preservation
+
+`lib/domain.ts::tagsFor` recognizes a fixed vocabulary using word boundaries. `match` compares recognized job tags with the union of candidate fact tags and returns matched tags, gaps, supporting facts and a rounded percentage. If the job has no recognized tags, the score is null. Readers can inspect the denominator and supporting statements instead of relying on a score alone.
+
+`aiPayload` sends requirement tags and numbered evidence/tag pairs. `compose` deduplicates valid ordering IDs and then appends all remaining candidate facts. It groups exact factual blocks under document sections and uses relevant facts in a cover-letter template. This design gives AI ordering a bounded role while the user remains responsible for wording, relevance and the final application.
+
+### Discovery, exports and persistence
+
+`lib/jobs.ts::normalizeRemotive` checks source links, normalizes dates, strips HTML, limits description length and deduplicates company/title/location combinations. Filtering combines role words with location and an explicit remote option. Those rules determine which vacancies appear and should be considered when interpreting a small result set.
+
+Document handling uses PDF/DOCX extraction and local export libraries, with size and archive-expansion bounds. Supabase policies and signed-in user tokens govern saved private records. The SQL schema retains document versions, giving a saved application a concrete document history instead of silently replacing prior text.
+
+### Demonstrated outcome
+
+The 1 November verification record reports 14 passing tests, a passing TypeScript check and a completed production build. Tests exercise payload privacy, factual preservation, matching, source normalization, export roundtrips and malformed inputs. These establish the local document and matching workflow. Live authentication, synchronization and provider paths require their separately configured services.
+
+### Source guide
+
+```text
+app/page.tsx                 interactive workspace
+app/api/[...path]/route.ts   server entry points
+lib/domain.ts               schemas, skills, matching and composition
+lib/jobs.ts                 source normalization and filtering
+lib/documents.ts            extraction and document exports
+lib/server.ts               auth, quotas, provider and persistence
+supabase/schema.sql         records, ownership policies and versions
+tests/                      domain, source and document checks
+```
+
+A labeled set of job descriptions and candidate facts would help evaluate missed skill synonyms and relevance ordering. Deployed cross-user tests would extend the existing local evidence to the private save/delete workflow.
