@@ -79,7 +79,6 @@ Status: implementation under verification. No verified public deployment yet. Li
 - https://supabase.com/docs/guides/auth/sessions/pkce-flow
 - https://vercel.com/docs/plans/hobby
 
-No emails, reminders or applications are sent automatically.
 
 ## Technical documentation and attribution
 
